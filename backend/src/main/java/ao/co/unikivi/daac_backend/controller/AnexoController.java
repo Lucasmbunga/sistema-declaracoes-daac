@@ -5,6 +5,8 @@ import ao.co.unikivi.daac_backend.dto.AnexoRespostaDto;
 import ao.co.unikivi.daac_backend.service.AnexoService;
 import ao.co.unikivi.daac_backend.util.ApiResponse;
 import ao.co.unikivi.daac_backend.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/anexos")
+@Tag(name = "Anexos e Documentos", description = "Gestão de ficheiros enviados (B.I., Comprovativos) armazenados no Cloudflare R2")
 public class AnexoController {
 
     private final AnexoService anexoServico;
@@ -25,6 +28,7 @@ public class AnexoController {
     }
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Carregar anexo isolado", description = "Envia um documento individual para o Cloudflare R2 e associa ao pedido.")
     public ResponseEntity<ApiResponse<AnexoRespostaDto>> carregarAnexo(
             @RequestParam("idPedido") Long idPedido,
             @RequestParam("tipoDocumento") TipoDocumento tipoDocumento,
@@ -37,6 +41,7 @@ public class AnexoController {
     }
 
     @GetMapping("/pedido/{idPedido}")
+    @Operation(summary = "Listar anexos por pedido", description = "Retorna todos os documentos associados a um determinado pedido.")
     public ResponseEntity<ApiResponse<List<AnexoRespostaDto>>> listarPorPedido(
             @PathVariable Long idPedido,
             HttpServletRequest request) {
@@ -46,6 +51,7 @@ public class AnexoController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar anexo", description = "Remove o documento do sistema e do Cloudflare R2.")
     public ResponseEntity<ApiResponse<AnexoRespostaDto>> eliminarAnexo(
             @PathVariable Long id,
             HttpServletRequest request) {

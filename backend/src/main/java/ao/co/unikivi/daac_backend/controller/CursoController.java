@@ -5,6 +5,8 @@ import ao.co.unikivi.daac_backend.dto.CursoRespostaDto;
 import ao.co.unikivi.daac_backend.service.CursoService;
 import ao.co.unikivi.daac_backend.util.ApiResponse;
 import ao.co.unikivi.daac_backend.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -15,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/cursos")
+@Tag(name = "Cursos", description = "Gestão dos cursos ministrados na Escola Superior Politécnica do Uíge")
 public class CursoController {
 
     private final CursoService cursoServico;
@@ -24,6 +27,7 @@ public class CursoController {
     }
 
     @PostMapping
+    @Operation(summary = "Registar novo curso", description = "Adiciona um novo curso à base de dados académica.")
     public ResponseEntity<ApiResponse<CursoRespostaDto>> criar(@Valid @RequestBody CursoCriacaoDto dto, HttpServletRequest request) {
         CursoRespostaDto criado = cursoServico.criarCurso(dto);
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -31,18 +35,21 @@ public class CursoController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar cursos", description = "Lista todos os cursos disponíveis na instituição.")
     public ResponseEntity<ApiResponse<List<CursoRespostaDto>>> listar(HttpServletRequest request) {
         List<CursoRespostaDto> lista = cursoServico.listarTodos();
         return ResponseEntity.ok(ResponseUtil.sucess(lista, "Lista de cursos obtida com sucesso", request.getRequestURI()));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar curso por ID", description = "Retorna os dados detalhados de um curso específico.")
     public ResponseEntity<ApiResponse<CursoRespostaDto>> buscarPorId(@PathVariable Long id, HttpServletRequest request) {
         CursoRespostaDto curso = cursoServico.buscarPorId(id);
         return ResponseEntity.ok(ResponseUtil.sucess(curso, "Curso encontrado com sucesso", request.getRequestURI()));
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Eliminar um curso por  ID", description = "Retorna os dados detalhados de um curso específico eliminado.")
     public ResponseEntity<ApiResponse<CursoRespostaDto>> eliminarCurso(@PathVariable Long id,HttpServletRequest request){
         var response=ResponseUtil.sucess(cursoServico.eliminarCurso(id),"Curso eliminado com sucesso!",request.getRequestURI());
 

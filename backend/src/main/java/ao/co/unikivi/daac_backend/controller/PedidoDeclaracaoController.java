@@ -5,6 +5,8 @@ import ao.co.unikivi.daac_backend.dto.PedidoDeclaracaoRespostaDto;
 import ao.co.unikivi.daac_backend.service.PedidoDeclaracaoService;
 import ao.co.unikivi.daac_backend.util.ApiResponse;
 import ao.co.unikivi.daac_backend.util.ResponseUtil;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pedidos")
+@Tag(name = "Pedidos de Declaração", description = "Submissão, acompanhamento e gestão de pedidos de declarações")
 public class PedidoDeclaracaoController {
 
     private final PedidoDeclaracaoService pedidoServico;
@@ -26,6 +29,7 @@ public class PedidoDeclaracaoController {
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @Operation(summary = "Submeter novo pedido", description = "Submete um pedido de declaração enviando o ID do estudante, o B.I. e o comprovativo de pagamento (Multipart/Form-Data).")
     public ResponseEntity<ApiResponse<PedidoDeclaracaoRespostaDto>> criarPedido(
             @RequestParam("idEstudante") Long idEstudante,
             @RequestParam("ficheiroBi") MultipartFile ficheiroBi,
@@ -38,6 +42,7 @@ public class PedidoDeclaracaoController {
     }
 
     @PatchMapping("/{id}/estado")
+    @Operation(summary = "Atualizar estado do pedido", description = "Permite ao técnico do DAAC aprovar ou rejeitar um pedido, registando o histórico.")
     public ResponseEntity<ApiResponse<PedidoDeclaracaoRespostaDto>> atualizarEstado(
             @PathVariable Long id,
             @Valid @RequestBody PedidoAtualizacaoEstadoDto dto,
@@ -48,12 +53,14 @@ public class PedidoDeclaracaoController {
     }
 
     @GetMapping
+    @Operation(summary = "Listar todos os pedidos", description = "Retorna todos os pedidos de declaração submetidos no sistema.")
     public ResponseEntity<ApiResponse<List<PedidoDeclaracaoRespostaDto>>> listar(HttpServletRequest request) {
         List<PedidoDeclaracaoRespostaDto> lista = pedidoServico.listarTodos();
         return ResponseEntity.ok(ResponseUtil.sucess(lista, "Lista de pedidos obtida com sucesso", request.getRequestURI()));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary = "Buscar pedido por ID", description = "Detalhes completos de um pedido incluindo anexos associados.")
     public ResponseEntity<ApiResponse<PedidoDeclaracaoRespostaDto>> buscarPorId(@PathVariable Long id, HttpServletRequest request) {
         PedidoDeclaracaoRespostaDto pedido = pedidoServico.buscarPorId(id);
         return ResponseEntity.ok(ResponseUtil.sucess(pedido, "Pedido encontrado com sucesso", request.getRequestURI()));
