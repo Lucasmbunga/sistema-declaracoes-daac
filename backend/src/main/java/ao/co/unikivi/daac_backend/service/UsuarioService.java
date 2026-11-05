@@ -4,6 +4,7 @@ import ao.co.unikivi.daac_backend.domain.entity.Usuario;
 import ao.co.unikivi.daac_backend.dto.UsuarioCriacaoDto;
 import ao.co.unikivi.daac_backend.dto.UsuarioRespostaDto;
 import ao.co.unikivi.daac_backend.exception.BusinessRuleException;
+import ao.co.unikivi.daac_backend.exception.NotFoundException;
 import ao.co.unikivi.daac_backend.repository.UsuarioRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -43,7 +44,7 @@ public class UsuarioService{
     @Transactional(readOnly = true)
     public UsuarioRespostaDto buscarPorId(Long id) {
         Usuario usuario = usuarioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Usuário não encontrado com o ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Usuário não encontrado com o ID: " ));
         return mapearParaDto(usuario);
     }
 
@@ -55,11 +56,11 @@ public class UsuarioService{
     }
 
     @Transactional
-    public void eliminarUsuario(Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Não é possível eliminar. Usuário não encontrado com o ID: " + id);
-        }
-        usuarioRepository.deleteById(id);
+    public UsuarioRespostaDto eliminarUsuario(Long id) {
+        var usuario=usuarioRepository.findById(id).orElseThrow(()->new NotFoundException("Usuario nao encontrado."));
+
+        usuarioRepository.delete(usuario);
+        return mapearParaDto(usuario);
     }
 
     private UsuarioRespostaDto mapearParaDto(Usuario usuario) {
