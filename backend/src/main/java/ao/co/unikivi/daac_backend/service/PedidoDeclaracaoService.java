@@ -24,6 +24,7 @@ public class PedidoDeclaracaoService {
     private final HistoricoAuditoriaRepository auditoriaRepositorio;
     private final ArmazenamentoService armazenamentoR2;
     private final AnexoService anexoService;
+    private final HistoricoAuditoriaService historicoAuditoriaService;
 
     public PedidoDeclaracaoService(
             PedidoDeclaracaoRepository pedidoRepositorio,
@@ -31,7 +32,7 @@ public class PedidoDeclaracaoService {
             UsuarioRepository usuarioRepositorio,
             AnexoRepository anexoRepositorio,
             HistoricoAuditoriaRepository auditoriaRepositorio,
-            ArmazenamentoService armazenamentoR2, AnexoService anexoService) {
+            ArmazenamentoService armazenamentoR2, AnexoService anexoService,HistoricoAuditoriaService historicoAuditoriaService) {
         this.pedidoRepositorio = pedidoRepositorio;
         this.estudanteRepositorio = estudanteRepositorio;
         this.usuarioRepositorio = usuarioRepositorio;
@@ -39,6 +40,7 @@ public class PedidoDeclaracaoService {
         this.auditoriaRepositorio = auditoriaRepositorio;
         this.armazenamentoR2 = armazenamentoR2;
         this.anexoService = anexoService;
+        this.historicoAuditoriaService=historicoAuditoriaService;
     }
 
     @Transactional
@@ -93,6 +95,14 @@ public class PedidoDeclaracaoService {
                 .comentario(dto.comentario())
                 .build();
         auditoriaRepositorio.save(auditoria);
+
+        historicoAuditoriaService.registar(
+                pedidoAtualizado,
+                atendente,
+                estadoAnterior,
+                dto.novoEstado(),
+                dto.comentario()
+        );
 
         return mapearParaDto(pedidoAtualizado);
     }
