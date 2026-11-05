@@ -69,14 +69,14 @@ public class UsuarioController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<ApiResponse<Void>> eliminar(
+    public ResponseEntity<ApiResponse<UsuarioRespostaDto>> eliminar(
             @PathVariable Long id,
             HttpServletRequest request) {
 
-        usuarioService.eliminarUsuario(id);
+        ;
 
-        ApiResponse<Void> resposta = ResponseUtil.sucess(
-                null,
+        ApiResponse<UsuarioRespostaDto> resposta = ResponseUtil.sucess(
+                usuarioService.eliminarUsuario(id),
                 "Usuário eliminado com sucesso",
                 request.getRequestURI()
         );
