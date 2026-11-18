@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { ArrowLeft, ShieldCheck, ArrowRight } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../schemas/registerSchema';
 import { PersonalIdentificationSection } from './PersonalIdentificationSection';
@@ -10,8 +10,7 @@ import { CredentialsSection } from './CredentialsSection';
 import { useAuth } from '../hooks/useAuth';
 
 export const RegisterForm: React.FC = () => {
-  const { registerStudent, isRegistering } = useAuth();
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { registerStudent } = useAuth();
 
   const {
     register,
@@ -35,7 +34,6 @@ export const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      setErrorMessage(null);
       await registerStudent({
         nomeCompleto: data.nomeCompleto,
         email: data.email,
@@ -49,7 +47,7 @@ export const RegisterForm: React.FC = () => {
         telefone: data.telefone,
       });
     } catch (err: any) {
-      setErrorMessage(err?.response?.data?.message || 'Erro ao criar conta de estudante. Tente novamente.');
+      console.error(err);
     }
   };
 
