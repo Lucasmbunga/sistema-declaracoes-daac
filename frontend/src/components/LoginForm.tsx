@@ -1,19 +1,20 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Link, useNavigate } from 'react-router';
-import { Mail, Shield, Eye, EyeOff, ArrowRight, AlertCircle, ArrowLeft } from 'lucide-react';
+import { Link } from 'react-router';
+import { Mail, Shield, Eye, EyeOff, ArrowRight, AlertCircle, ArrowLeft, Loader2 } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../schemas/loginSchema';
+import { useAuth } from '../hooks/useAuth';
 
 export const LoginForm: React.FC = () => {
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const {login,isLoggingIn}=useAuth();
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -25,11 +26,9 @@ export const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginFormData) => {
     try {
       setAuthError(null);
-      console.log('Dados de login:', data);
-      // Redirecionamento simulado para o painel do estudante
-      navigate('/estudante/painel');
-    } catch (err) {
-      setAuthError('Ocorreu um erro ao iniciar sessão. Verifique as suas credenciais.');
+      await login({ email: data.email, password: data.password });
+    } catch (err: any) {
+      setAuthError(err?.response?.data?.message || 'Ocorreu um erro ao iniciar sessão. Verifique as suas credenciais.');
     }
   };
 
@@ -131,13 +130,22 @@ export const LoginForm: React.FC = () => {
 
           {/* Botão Submeter */}
           <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-[#0f2c33] hover:bg-[#15363d] text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
-          >
-            <span>{isSubmitting ? 'A entrar...' : 'Entrar na minha conta'}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+    type="submit"
+    disabled={isLoggingIn}
+    className="w-full bg-[#0f2c33] hover:bg-[#15363d] text-white font-semibold py-3.5 px-6 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
+  >
+    {isLoggingIn ? (
+      <>
+        <Loader2 className="w-4 h-4 animate-spin" />
+        <span>A autenticar...</span>
+      </>
+    ) : (
+      <>
+        <span>Entrar na minha conta</span>
+        <ArrowRight className="w-4 h-4" />
+      </>
+    )}
+  </button>
         </form>
 
         <div className="text-center text-xs text-slate-600">
@@ -148,10 +156,6 @@ export const LoginForm: React.FC = () => {
         </div>
       </div>
 
-      {/* Aviso de Demonstração */}
-      <div className="text-center text-[11px] text-slate-400 border-t border-slate-200 pt-6">
-        Esta interface é uma demonstração. Nenhuma credencial é enviada ou armazenada.
-      </div>
     </div>
   );
 };

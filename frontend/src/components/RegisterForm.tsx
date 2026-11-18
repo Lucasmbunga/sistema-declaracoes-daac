@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useNavigate } from 'react-router';
@@ -7,9 +7,11 @@ import { registerSchema, type RegisterFormData } from '../schemas/registerSchema
 import { PersonalIdentificationSection } from './PersonalIdentificationSection';
 import { AcademicDataSection } from './AcademicDataSection';
 import { CredentialsSection } from './CredentialsSection';
+import { useAuth } from '../hooks/useAuth';
 
 export const RegisterForm: React.FC = () => {
-  const navigate = useNavigate();
+  const { registerStudent, isRegistering } = useAuth();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const {
     register,
@@ -23,8 +25,8 @@ export const RegisterForm: React.FC = () => {
       numeroBi: '',
       telefone: '',
       numeroMecanog: '',
+      numeroProcesso: '',
       idCurso: '',
-      campo: '',
       turma: '',
       palavraPasse: '',
       confirmarPalavraPasse: '',
@@ -33,11 +35,21 @@ export const RegisterForm: React.FC = () => {
 
   const onSubmit = async (data: RegisterFormData) => {
     try {
-      console.log('Dados de registo submetidos:', data);
-      // Aqui faria a chamada POST /estudantes ou /auth/register
-      navigate('/login');
-    } catch (error) {
-      console.error('Erro ao registar estudante:', error);
+      setErrorMessage(null);
+      await registerStudent({
+        nomeCompleto: data.nomeCompleto,
+        email: data.email,
+        palavraPasse: data.palavraPasse,
+        papelUsuario: 'ESTUDANTE',
+        idCurso: Number(data.idCurso),
+        numeroMecanog: data.numeroMecanog,
+        numeroProcesso: data.numeroProcesso,
+        turma: data.turma,
+        numeroBi: data.numeroBi,
+        telefone: data.telefone,
+      });
+    } catch (err: any) {
+      setErrorMessage(err?.response?.data?.message || 'Erro ao criar conta de estudante. Tente novamente.');
     }
   };
 
@@ -71,20 +83,20 @@ export const RegisterForm: React.FC = () => {
         {/* Aviso de demonstração */}
         <div className="bg-emerald-50/60 border border-emerald-200/80 rounded-2xl p-4 flex items-center space-x-3 text-xs text-emerald-900">
           <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span>Os dados desta interface são apenas de demonstração. O registo não é enviado para um servidor[cite: 5].</span>
+          <span>Os dados desta interface são apenas de demonstração. O registo não é enviado para um servidor.</span>
         </div>
 
         {/* Barra inferior de submissão */}
         <div className="flex flex-col sm:flex-row items-center justify-between pt-4 border-t border-slate-200 gap-4">
           <p className="text-xs text-slate-500">
-            Ao continuar, confirme que os dados são verdadeiros[cite: 5].
+            Ao continuar, confirme que os dados são verdadeiros.
           </p>
           <button
             type="submit"
             disabled={isSubmitting}
             className="w-full sm:w-auto bg-[#0f2c33] hover:bg-[#15363d] text-white font-semibold py-3.5 px-8 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 disabled:opacity-50"
           >
-            <span>{isSubmitting ? 'A criar conta...' : 'Criar conta de demonstração'}</span>
+            <span>{isSubmitting ? 'A criar conta...' : 'Criar conta '}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

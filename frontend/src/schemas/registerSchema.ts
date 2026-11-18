@@ -18,12 +18,12 @@ export const registerSchema = z.object({
   numeroMecanog: z
     .string()
     .min(1, 'O número de estudante/matrícula é obrigatório'),
+    numeroProcesso: z
+    .string()
+    .min(1, 'O número de estudante/matrícula é obrigatório'),
   idCurso: z
     .string()
     .min(1, 'Selecione um curso'),
-  campo: z
-    .string()
-    .min(1, 'Selecione um campo'),
   turma: z
     .string()
     .min(1, 'Selecione uma turma'),

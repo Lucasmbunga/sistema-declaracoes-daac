@@ -1,6 +1,8 @@
 import React from 'react';
 import type { UseFormRegister, FieldErrors } from 'react-hook-form';
 import { type RegisterFormData } from '../schemas/registerSchema';
+import { Loader2 } from 'lucide-react';
+import { useCourses } from '../hooks/useCourses';
 
 interface AcademicDataSectionProps {
   register: UseFormRegister<RegisterFormData>;
@@ -8,6 +10,7 @@ interface AcademicDataSectionProps {
 }
 
 export const AcademicDataSection: React.FC<AcademicDataSectionProps> = ({ register, errors }) => {
+  const { data: cursos, isLoading: isLoadingCursos } = useCourses();
   return (
     <div className="bg-white rounded-2xl border border-slate-200/80 p-6 sm:p-8 shadow-sm space-y-6">
       <h3 className="font-bold text-lg text-slate-900 border-b border-slate-100 pb-4">
@@ -18,7 +21,7 @@ export const AcademicDataSection: React.FC<AcademicDataSectionProps> = ({ regist
         {/* Número de estudante / matrícula */}
         <div className="space-y-1.5">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Número de estudante / matrícula
+            Número de Mecanográfico
           </label>
           <input
             type="text"
@@ -32,40 +35,47 @@ export const AcademicDataSection: React.FC<AcademicDataSectionProps> = ({ regist
         </div>
 
         {/* Curso */}
-        <div className="space-y-1.5">
-          <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Curso
-          </label>
-          <select
-            {...register('idCurso')}
-            className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 transition-all ${
-              errors.idCurso ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-[#0f2c33] focus:ring-[#0f2c33]/20'
-            }`}
-          >
-            <option value="">Seleccione o curso</option>
-            <option value="1">Engenharia Informática</option>
-            <option value="2">Engenharia Civil</option>
-            <option value="3">Engenharia Mecânica</option>
-            <option value="4">Engenharia Eléctrica</option>
-          </select>
-          {errors.idCurso && <p className="text-xs text-red-600 font-medium">{errors.idCurso.message}</p>}
-        </div>
+        {/* Curso carregado dinamicamente via API */}
+  <div className="space-y-1.5">
+    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
+      Curso
+    </label>
+    <div className="relative">
+      <select
+        {...register('idCurso')}
+        disabled={isLoadingCursos}
+        className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 transition-all ${
+          errors.idCurso ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-[#0f2c33] focus:ring-[#0f2c33]/20'
+        }`}
+      >
+        <option value="">{isLoadingCursos ? 'A carregar cursos...' : 'Seleccione o curso'}</option>
+        {cursos?.map((curso) => (
+          <option key={curso.id} value={curso.id}>
+            {curso.nome}
+          </option>
+        ))}
+      </select>
+      {isLoadingCursos && (
+        <Loader2 className="w-4 h-4 animate-spin absolute right-3 top-3.5 text-slate-400" />
+      )}
+    </div>
+    {errors.idCurso && <p className="text-xs text-red-600 font-medium">{errors.idCurso.message}</p>}
+  </div>
 
         {/* Campo */}
         <div className="space-y-1.5">
           <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider">
-            Campo
+            Número de Processo
           </label>
-          <select
-            {...register('campo')}
+          <input
+            {...register('numeroProcesso')}
             className={`w-full px-4 py-3 bg-white border rounded-xl text-sm text-slate-900 focus:outline-none focus:ring-2 transition-all ${
-              errors.campo ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-[#0f2c33] focus:ring-[#0f2c33]/20'
+              errors.numeroProcesso ? 'border-red-500 focus:ring-red-200' : 'border-slate-300 focus:border-[#0f2c33] focus:ring-[#0f2c33]/20'
             }`}
-          >
-            <option value="">Seleccione o campo</option>
-            <option value="engenharia">Faculdade de Engenharia</option>
-          </select>
-          {errors.campo && <p className="text-xs text-red-600 font-medium">{errors.campo.message}</p>}
+
+          
+        />
+          {errors.numeroProcesso && <p className="text-xs text-red-600 font-medium">{errors.numeroProcesso.message}</p>}
         </div>
 
         {/* Turma */}

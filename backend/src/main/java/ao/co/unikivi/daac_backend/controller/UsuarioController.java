@@ -1,5 +1,6 @@
 package ao.co.unikivi.daac_backend.controller;
 
+import ao.co.unikivi.daac_backend.domain.entity.Usuario;
 import ao.co.unikivi.daac_backend.dto.UsuarioCriacaoDto;
 import ao.co.unikivi.daac_backend.dto.UsuarioRespostaDto;
 import ao.co.unikivi.daac_backend.service.UsuarioService;
@@ -33,13 +34,13 @@ public class UsuarioController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Usuário criado com sucesso"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Dados inválidos ou email já existente")
     })
-    public ResponseEntity<ApiResponse<UsuarioRespostaDto>> registar(
+    public ResponseEntity<ApiResponse<Usuario>> registar(
             @Valid @RequestBody UsuarioCriacaoDto dto,
             HttpServletRequest request) {
 
-        UsuarioRespostaDto novoUsuario = usuarioService.registarUsuario(dto);
+        var novoUsuario = usuarioService.registarUsuario(dto);
 
-        ApiResponse<UsuarioRespostaDto> resposta = ResponseUtil.sucess(
+        ApiResponse<Usuario> resposta = ResponseUtil.sucess(
                 novoUsuario,
                 "Usuário criado com sucesso",
                 request.getRequestURI()

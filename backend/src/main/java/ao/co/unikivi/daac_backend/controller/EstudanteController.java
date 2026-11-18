@@ -53,6 +53,12 @@ public class EstudanteController {
         EstudanteRespostaDto estudante = estudanteServico.buscarPorId(id);
         return ResponseEntity.ok(ResponseUtil.sucess(estudante, "Estudante encontrado com sucesso", request.getRequestURI()));
     }
+    @GetMapping("/usuario/{idUsuario}")
+    public ResponseEntity<ApiResponse<EstudanteRespostaDto>> buscarPorIdUsuario(@PathVariable Long idUsuario, HttpServletRequest request) {
+        // Implementação do serviço que busca o estudante onde idUsuario == idUsuario
+        var response = ResponseUtil.sucess(estudanteServico.buscarPorIdUsuario(idUsuario),"Success",request.getRequestURI());
+        return ResponseEntity.ok(response);
+    }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar um curso por  ID", description = "Retorna os detalhes de um curso eliminado pelo identificador único.")

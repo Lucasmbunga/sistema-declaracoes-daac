@@ -26,7 +26,7 @@ export const HeroSection: React.FC = () => {
 
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 pt-2">
               <Link 
-                to="/pedidos/novo" 
+                to="/perfil/student/pedir-requerimento" 
                 className="bg-[#0f2c33] hover:bg-[#15363d] text-white font-semibold px-6 py-4 rounded-xl shadow-lg transition-all flex items-center justify-center space-x-2 group"
               >
                 <span>Começar requerimento</span>

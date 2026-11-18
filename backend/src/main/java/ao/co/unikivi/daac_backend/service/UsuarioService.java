@@ -25,7 +25,7 @@ public class UsuarioService{
     }
 
     @Transactional
-    public UsuarioRespostaDto registarUsuario(UsuarioCriacaoDto dto) {
+    public Usuario registarUsuario(UsuarioCriacaoDto dto) {
         if (usuarioRepository.existsByEmail(dto.email())) {
             throw new BusinessRuleException("Já existe um usuário registado com este email: " + dto.email());
         }
@@ -38,7 +38,7 @@ public class UsuarioService{
                 .build();
 
         Usuario usuarioSalvo = usuarioRepository.save(usuario);
-        return mapearParaDto(usuarioSalvo);
+        return usuarioSalvo;
     }
 
     @Transactional(readOnly = true)

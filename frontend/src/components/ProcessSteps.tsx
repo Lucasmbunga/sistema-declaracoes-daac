@@ -7,7 +7,7 @@ interface StepItemProps {
 }
 
 const StepItem: React.FC<StepItemProps> = ({ stepNumber, title, description }) => (
-  <div className="bg-[#fafaf9] p-6 rounded-2xl border border-slate-200/60 hover:shadow-md transition-shadow">
+  <div className="bg-[#fafaf9] p-6 rounded-2xl ring-1 ring-slate-200 hover:shadow-md transition-shadow">
     <span className="text-xs font-mono font-bold text-amber-600 mb-2 block">{stepNumber}</span>
     <h4 className="font-bold text-slate-900 text-base mb-1.5">{title}</h4>
     <p className="text-xs text-slate-600 leading-relaxed">{description}</p>
@@ -31,7 +31,8 @@ export const ProcessSteps: React.FC = () => {
             </p>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 gap-4 relative">
+            <div className='absolute top-[45%] left-[47.95%] p-4 bg-slate-200  border-slate-700 rounded-full '></div>
             <StepItem 
               stepNumber="01/04"
               title="Submeta o pedido"

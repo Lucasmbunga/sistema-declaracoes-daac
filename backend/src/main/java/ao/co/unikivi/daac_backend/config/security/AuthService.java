@@ -35,7 +35,7 @@ public class AuthService {
         return new TokenResponseDto(token);
     }
 
-    public UsuarioRespostaDto register(UsuarioCriacaoDto usuarioCriacaoDto){
+    public Usuario register(UsuarioCriacaoDto usuarioCriacaoDto){
         return usuarioService.registarUsuario(usuarioCriacaoDto);
     }
 }
