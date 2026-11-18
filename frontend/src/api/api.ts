@@ -1,9 +1,12 @@
 import axios from "axios";
 
-const BASE_URL="http://localhost:8080/api/v1";
+const BASE_URL="https://honest-benevolence-production-a94b1ff6.up.railway.app/api/v1";
 
 const api=axios.create({
-    baseURL:BASE_URL
+    baseURL:BASE_URL,
+    headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
 api.interceptors.request.use(config=>{
