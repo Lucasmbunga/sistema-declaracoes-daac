@@ -49,6 +49,12 @@ public class AnexoController {
         List<AnexoRespostaDto> anexos = anexoServico.listarPorPedido(idPedido);
         return ResponseEntity.ok(ResponseUtil.sucess(anexos, "Lista de anexos obtida com sucesso", request.getRequestURI()));
     }
+    @GetMapping("/{id}/url-temporaria")
+    @Operation(summary = "Obter URL temporária segura", description = "Gera uma URL assinada válida por 15 minutos para visualizar o anexo privado no modal.")
+    public ResponseEntity<ApiResponse<String>> obterUrlTemporaria(@PathVariable Long id, HttpServletRequest request) {
+        String urlTemporaria = anexoServico.obterUrlTemporaria(id);
+        return ResponseEntity.ok(ResponseUtil.sucess(urlTemporaria, "URL temporária gerada com sucesso", request.getRequestURI()));
+    }
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Eliminar anexo", description = "Remove o documento do sistema e do Cloudflare R2.")

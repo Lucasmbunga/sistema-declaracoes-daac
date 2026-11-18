@@ -6,6 +6,7 @@ import ao.co.unikivi.daac_backend.domain.entity.Usuario;
 import ao.co.unikivi.daac_backend.dto.EstudanteAtualizacaoDto;
 import ao.co.unikivi.daac_backend.dto.EstudanteCriacaoDto;
 import ao.co.unikivi.daac_backend.dto.EstudanteRespostaDto;
+import ao.co.unikivi.daac_backend.dto.UsuarioCriacaoDto;
 import ao.co.unikivi.daac_backend.exception.BusinessRuleException;
 import ao.co.unikivi.daac_backend.exception.NotFoundException;
 import ao.co.unikivi.daac_backend.repository.CursoRepository;
@@ -24,11 +25,13 @@ public class EstudanteService {
     private final EstudanteRepository estudanteRepositorio;
     private final UsuarioRepository usuarioRepositorio;
     private final CursoRepository cursoRepositorio;
+    private final UsuarioService usuarioService;
 
-    public EstudanteService(EstudanteRepository estudanteRepositorio, UsuarioRepository usuarioRepositorio, CursoRepository cursoRepositorio) {
+    public EstudanteService(EstudanteRepository estudanteRepositorio, UsuarioRepository usuarioRepositorio, CursoRepository cursoRepositorio,UsuarioService usuarioService) {
         this.estudanteRepositorio = estudanteRepositorio;
         this.usuarioRepositorio = usuarioRepositorio;
         this.cursoRepositorio = cursoRepositorio;
+        this.usuarioService=usuarioService;
     }
 
     @Transactional
@@ -36,13 +39,9 @@ public class EstudanteService {
         if (usuarioRepositorio.existsByEmail(dto.email())) {
             throw new BusinessRuleException("Email ja registrado");
         }
-        Usuario novoUsuario=new Usuario();
-        novoUsuario.setNomeCompleto(dto.nomeCompleto());
-        novoUsuario.setEmail(dto.email());
-        novoUsuario.setPalavraPasse(dto.palavraPasse());
-        novoUsuario.setPapelUsuario(dto.papelUsuario());
 
-        usuarioRepositorio.save(novoUsuario);
+        UsuarioCriacaoDto usuarioCriacaoDto=new UsuarioCriacaoDto(dto.nomeCompleto(),dto.email(),dto.palavraPasse(),dto.papelUsuario());
+        var novoUsuario=usuarioService.registarUsuario(usuarioCriacaoDto);
 
         Curso curso = cursoRepositorio.findById(dto.idCurso())
                 .orElseThrow(() -> new RuntimeException("Curso não encontrado"));
@@ -110,6 +109,10 @@ public class EstudanteService {
 
         return mapearParaDto(estudante);
     }
+    public EstudanteRespostaDto buscarPorIdUsuario(Long idUsuario) {
+        var estudante=estudanteRepositorio.findByUsuarioId(idUsuario).orElseThrow(()->new NotFoundException("Estudante não encontrado"));
+        return mapearParaDto(estudante);
+    }
 
     private EstudanteRespostaDto mapearParaDto(Estudante e) {
         return new EstudanteRespostaDto(
@@ -126,4 +129,6 @@ public class EstudanteService {
                 e.getTelefone()
         );
     }
+
+
 }

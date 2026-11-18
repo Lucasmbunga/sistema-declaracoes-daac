@@ -3,6 +3,8 @@ package ao.co.unikivi.daac_backend.domain.entity;
 import ao.co.unikivi.daac_backend.domain.enums.EstadoPedido;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -33,6 +35,33 @@ public class PedidoDeclaracao {
 
     @Column(name = "atualizado_em")
     private LocalDateTime atualizadoEm;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "lote_impressao_id")
+    private LoteImpressao loteImpressao;
+    @Column(name = "efeito_declaracao", nullable = false, length = 150)
+    private String efeitoDeclaracao;
+
+    @Column(name = "nome_pai", nullable = false, length = 200)
+    private String nomePai;
+
+    @Column(name = "nome_mae", nullable = false, length = 200)
+    private String nomeMae;
+
+    @Column(name = "data_nascimento")
+    private LocalDate dataNascimento;
+
+    @Column(name = "numero_bi", length = 50)
+    private String numeroBi;
+
+    @Column(name = "data_emissao_bi")
+    private LocalDate dataEmissaoBi;
+
+    @Column(name = "ano_frequencia", length = 30)
+    private String anoFrequencia;
+
+    @Column(name = "ano_letivo", length = 20)
+    private String anoLetivo;
 
     @PrePersist
     public void prePersist() {

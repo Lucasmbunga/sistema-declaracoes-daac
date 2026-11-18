@@ -79,6 +79,13 @@ public class AnexoService {
         anexoRepositorio.deleteById(idAnexo);
         return mapearParaDto(anexo);
     }
+    @Transactional(readOnly = true)
+    public String obterUrlTemporaria(Long anexoId) {
+        Anexo anexo = anexoRepositorio.findById(anexoId)
+                .orElseThrow(() -> new RuntimeException("Anexo não encontrado com o ID: " + anexoId));
+
+        return armazenamentoR2.obterUrlTemporaria(anexo.getUrlDocumento());
+    }
 
     private AnexoRespostaDto mapearParaDto(Anexo a) {
         return new AnexoRespostaDto(

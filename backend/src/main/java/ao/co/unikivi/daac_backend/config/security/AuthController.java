@@ -1,5 +1,6 @@
 package ao.co.unikivi.daac_backend.config.security;
 
+import ao.co.unikivi.daac_backend.domain.entity.Usuario;
 import ao.co.unikivi.daac_backend.dto.UsuarioCriacaoDto;
 import ao.co.unikivi.daac_backend.dto.UsuarioRespostaDto;
 import ao.co.unikivi.daac_backend.util.ApiResponse;
@@ -29,7 +30,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<ApiResponse<UsuarioRespostaDto>> register(@Valid @RequestBody UsuarioCriacaoDto usuarioCriacaoDto, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<Usuario>> register(@Valid @RequestBody UsuarioCriacaoDto usuarioCriacaoDto, HttpServletRequest request) {
         var response= ResponseUtil.sucess(authService.register(usuarioCriacaoDto),"Usuário  registrado  com sucesso!",request.getRequestURI());
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
